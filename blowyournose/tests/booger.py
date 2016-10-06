@@ -2,6 +2,7 @@ from __future__ import print_function
 
 import atexit
 import gc
+import inspect
 import pprint
 import sys
 
@@ -26,12 +27,17 @@ class Booger(object):
         # and 3) the argument to sys.getrefcount.
         OK_REF_COUNT = 3
 
+        # The things we expect to be referring to boogers.
+        us = [cls.all, inspect.currentframe()]
+
         for b in cls.all:
             if b.reported:
                 continue
             if sys.getrefcount(b) > OK_REF_COUNT:
-                print(b, file=sys.stderr)
-                pprint.pprint(gc.get_referrers(b), stream=sys.stderr)
+                # Show the unexpected referrers.
+                referrers = [r for r in gc.get_referrers(b) if r not in us]
+                print("** Unpicked booger with these referrers:", file=sys.stderr)
+                pprint.pprint(referrers, stream=sys.stderr)
                 b.reported = True
 
 
