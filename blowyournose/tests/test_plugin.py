@@ -24,7 +24,7 @@ class MockedTestCaseMethod(unittest.TestCase):
         pass
 
 
-@mock.patch('os.listdir', Booger("MockedTestCaseClass", when='class'))
+@mock.patch('os.listdir', Booger("MockedTestCaseClass", scope='class'))
 class MockedTestCaseClass(unittest.TestCase):
     def test_first(self):
         pass
