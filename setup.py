@@ -11,7 +11,7 @@ setup(
     entry_points={
         'nose.plugins.0.10': [
             'blowyournose = blowyournose.plugin:BlowYourNose',
-            'boogers = blowyournose.tests.booger:BoogerCheck',
+            'boogercheck = blowyournose.tests.booger:BoogerCheck',
         ]
     }
 )

@@ -5,7 +5,7 @@
 default: test
 
 test:
-	nosetests
+	nosetests --with-blowyournose --with-boogercheck -v -s
 
 clean:
 	-rm -rf *.egg-info
