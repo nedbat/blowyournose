@@ -19,7 +19,7 @@ class TestCaseWithSetupBoogers(unittest.TestCase):
 
 
 class MockedTestCaseMethod(unittest.TestCase):
-    @mock.patch('os.listdir', Booger())
+    @mock.patch('os.listdir', Booger("test_with_mock"))
     def test_with_mock(self):
         pass
 

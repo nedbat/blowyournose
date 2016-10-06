@@ -14,9 +14,10 @@ import objgraph
 class Booger(object):
     all = []
 
-    all_check_names = set()
+    # A set of (when, name) pairs that have been checked.
+    all_checks = set()
 
-    def __init__(self, name='Unknown', when='method'):
+    def __init__(self, name, when='method'):
         self.name = name
         self.when = when
 
@@ -30,9 +31,10 @@ class Booger(object):
 
     @classmethod
     def check_all(cls, when, names):
+        #print("*** {}".format(names), file=sys.stderr)
         gc.collect()
 
-        cls.all_check_names.update(names)
+        cls.all_checks.update((when, name) for name in names)
 
         # We expect three refs: 1) Booger.all, 2) the b local,
         # and 3) the argument to sys.getrefcount.
@@ -62,16 +64,16 @@ class Booger(object):
                 b.reported = True
 
     @classmethod
-    def check_all_names(cls):
+    def check_all_checks(cls):
         """Check that every Booger name was checked for."""
-        all_names = set(b.name for b in cls.all)
-        unchecked = all_names - cls.all_check_names
+        all_checked = set((b.when, b.name) for b in cls.all)
+        unchecked = all_checked - cls.all_checks
         if unchecked:
             print("** These Boogers were never checked:", file=sys.stderr)
-            print("\n".join(unchecked), file=sys.stderr)
+            print("\n".join("{}: {}".format(*check) for check in unchecked), file=sys.stderr)
 
 
-atexit.register(Booger.check_all_names)
+atexit.register(Booger.check_all_checks)
 
 class BoogerCheck(Plugin):
 
@@ -79,4 +81,4 @@ class BoogerCheck(Plugin):
 
     def afterTest(self, test):
         assert hasattr(test, 'byn_cleaned')
-        Booger.check_all(when='method', names=['fooey'])
+        Booger.check_all(when='method', names=[test.test._testMethodName, test.test.__class__.__name__])
