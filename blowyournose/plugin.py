@@ -2,6 +2,8 @@ from nose.plugins import Plugin
 
 class BlowYourNose(Plugin):
 
+    score = 1000
+
     # `test` is a Nose test object. `test.test` is the actual TestCase object
     # being run.
 
@@ -13,3 +15,5 @@ class BlowYourNose(Plugin):
         for attr in dir(obj):
             if attr not in test.byn_attrs:
                 delattr(obj, attr)
+
+        test.byn_cleaned = True
