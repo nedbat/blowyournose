@@ -2,6 +2,7 @@ from __future__ import print_function
 
 import gc
 import inspect
+import os.path
 import pprint
 import sys
 
@@ -12,12 +13,15 @@ import objgraph
 class Booger(object):
     all = []
 
-    def __init__(self):
-        self.all.append(self)
+    def __init__(self, name='Unknown'):
+        self.name = name
+        caller_frame = inspect.stack()[1][0]
+        self.location = "{}@{}".format(os.path.basename(caller_frame.f_code.co_filename), caller_frame.f_lineno)
         self.reported = False
+        self.all.append(self)
 
     def __repr__(self):
-        return "<Booger @0x{:x}>".format(id(self))
+        return "<Booger {!r} @0x{:x} from {}>".format(self.name, id(self), self.location)
 
     @classmethod
     def check_all(cls):
@@ -36,7 +40,7 @@ class Booger(object):
             if sys.getrefcount(b) > OK_REF_COUNT:
                 # Show the unexpected referrers.
                 referrers = [r for r in gc.get_referrers(b) if r not in us]
-                print("** Unpicked booger with these referrers:", file=sys.stderr)
+                print("** {!r} unpicked, with these referrers:".format(b), file=sys.stderr)
                 pprint.pprint(referrers, stream=sys.stderr)
                 objgraph.show_backrefs(
                     [b],
