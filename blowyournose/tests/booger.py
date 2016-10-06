@@ -80,5 +80,14 @@ class BoogerCheck(Plugin):
     score = 999
 
     def afterTest(self, test):
+        # Called after test methods are run. Check for things that should have
+        # been cleaned up by the end of the method.
         assert hasattr(test, 'byn_cleaned')
         Booger.check_all(when='method', names=[test.test._testMethodName, test.test.__class__.__name__])
+
+    def stopContext(self, context):
+        # Called after classes and modules are done.  When we see a class,
+        # check for the things that should have been cleaned up by the end of
+        # the class.
+        if inspect.isclass(context):
+            Booger.check_all(when='class', names=[context.__name__])
