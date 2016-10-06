@@ -13,6 +13,7 @@ class Booger(object):
 
     def __init__(self):
         self.all.append(self)
+        self.reported = False
 
     def __repr__(self):
         return "<Booger>"
@@ -26,9 +27,12 @@ class Booger(object):
         OK_REF_COUNT = 3
 
         for b in cls.all:
+            if b.reported:
+                continue
             if sys.getrefcount(b) > OK_REF_COUNT:
                 print(b, file=sys.stderr)
                 pprint.pprint(gc.get_referrers(b), stream=sys.stderr)
+                b.reported = True
 
 
 class BoogerCheck(Plugin):
