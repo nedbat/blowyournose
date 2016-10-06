@@ -7,7 +7,7 @@ from booger import Booger
 
 class TestCaseWithSetupBoogers(unittest.TestCase):
     def setUp(self):
-        self.thing = Booger()
+        self.thing = Booger("TestCaseWithSetupBoogers")
 
     def test_one(self):
         print("one")
@@ -24,7 +24,7 @@ class MockedTestCaseMethod(unittest.TestCase):
         pass
 
 
-@mock.patch('os.listdir', Booger())
+@mock.patch('os.listdir', Booger("MockedTestCaseClass", when='class'))
 class MockedTestCaseClass(unittest.TestCase):
     def test_first(self):
         pass
