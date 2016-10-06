@@ -1,12 +1,12 @@
 from __future__ import print_function
 
-import atexit
 import gc
 import inspect
 import pprint
 import sys
 
 from nose.plugins import Plugin
+import objgraph
 
 
 class Booger(object):
@@ -17,7 +17,7 @@ class Booger(object):
         self.reported = False
 
     def __repr__(self):
-        return "<Booger>"
+        return "<Booger @0x{:x}>".format(id(self))
 
     @classmethod
     def check_all(cls):
@@ -38,6 +38,12 @@ class Booger(object):
                 referrers = [r for r in gc.get_referrers(b) if r not in us]
                 print("** Unpicked booger with these referrers:", file=sys.stderr)
                 pprint.pprint(referrers, stream=sys.stderr)
+                objgraph.show_backrefs(
+                    [b],
+                    filename="booger_{0:x}.png".format(id(b)),
+                    extra_ignore=map(id, us),
+                    max_depth=6,
+                )
                 b.reported = True
 
 
