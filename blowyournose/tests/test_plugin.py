@@ -38,7 +38,7 @@ class MockedTestCaseClass(unittest.TestCase):
 @ddt.ddt
 class DataTestCase1(unittest.TestCase):
 
-    if 0:
+    if 0:   # This isn't expected to work, because we don't need it to.
         @ddt.data(
             Booger("DataTestCase1", scope='class'),
             Booger("DataTestCase1", scope='class'),
