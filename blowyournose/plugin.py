@@ -4,6 +4,9 @@ import sys
 
 from nose.plugins import Plugin
 
+DDT_ATTR = '%values'
+
+
 class BlowYourNose(Plugin):
 
     score = 1000
@@ -25,6 +28,17 @@ class BlowYourNose(Plugin):
 
         # Is there a mock.patch on the test method?
         method = getattr(obj, obj._testMethodName)
+        if hasattr(method, DDT_ATTR):
+            context = test.context
+            if not hasattr(context, "blowyournose_ddt_methods"):
+                context.blowyournose_ddt_methods = []
+            context.blowyournose_ddt_methods.append(method)
+        else:
+            self.clean_method(method)
+
+        test.byn_cleaned = True
+
+    def clean_method(self, method):
         while method is not None:
             if hasattr(method, "patchings"):
                 if hasattr(method, "im_func"):
@@ -35,4 +49,6 @@ class BlowYourNose(Plugin):
             # Is this a decorated method?
             method = getattr(method, "__wrapped__", None)
 
-        test.byn_cleaned = True
+    def stopContext(self, context):
+        for method in getattr(context, "blowyournose_ddt_methods", ()):
+            self.clean_method(method)
