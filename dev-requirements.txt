@@ -1,5 +1,5 @@
 -e .
 nose
 mock
-ddt
+ddt>=1.1.1
 objgraph
