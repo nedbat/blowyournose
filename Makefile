@@ -5,10 +5,12 @@
 default: test
 
 test:
+	-rm -f booger_*.png
 	nosetests --with-blowyournose --with-boogercheck -v
 
 clean:
 	-rm -rf *.egg-info
+	-rm booger_*.png
 	-find . -name '__pycache__' -prune -exec rm -rf "{}" \;
 	-find . -name '*.pyc' -delete
 
