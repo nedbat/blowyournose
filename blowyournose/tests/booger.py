@@ -41,7 +41,6 @@ class Booger(object):
 
     @classmethod
     def check_all(cls, scope, names):
-        #print("+++", scope, names, file=sys.stderr)
         gc.collect()
 
         cls.all_checks.update((scope, name) for name in names)
