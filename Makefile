@@ -6,7 +6,7 @@ default: test
 
 test:
 	-rm -f booger_*.png
-	nosetests --with-blowyournose --with-boogercheck -v
+	nosetests --with-blowyournose --with-boogercheck -v $(ARGS)
 
 clean:
 	-rm -rf *.egg-info
