@@ -25,6 +25,16 @@ class MockedTestCaseMethod(unittest.TestCase):
     def test_with_mock(self):
         self.assertIsInstance(os.listdir, Booger)
 
+    @mock.patch('os.listdir', Booger("test_with_many_mocks"))
+    @mock.patch('os.getcwd', Booger("test_with_many_mocks"))
+    @mock.patch('os.chdir', "Hey there")
+    @mock.patch('os.getgid', Booger("test_with_many_mocks"))
+    def test_with_many_mocks(self):
+        self.assertIsInstance(os.listdir, Booger)
+        self.assertIsInstance(os.getcwd, Booger)
+        self.assertEqual(os.chdir, "Hey there")
+        self.assertIsInstance(os.getgid, Booger)
+
 
 @mock.patch('os.listdir', Booger("MockedTestCaseClass", scope='class'))
 class MockedTestCaseClass(unittest.TestCase):
