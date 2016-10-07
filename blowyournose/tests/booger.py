@@ -37,11 +37,11 @@ class Booger(object):
         self.all.append(self)
 
     def __repr__(self):
-        return "<Booger {!r} @0x{:x} from {}>".format(self.name, id(self), self.location)
+        return "<Booger {} {!r} at 0x{:x} from {}>".format(self.scope, self.name, id(self), self.location)
 
     @classmethod
     def check_all(cls, scope, names):
-        #print("*** {}".format(names), file=sys.stderr)
+        #print("+++", scope, names, file=sys.stderr)
         gc.collect()
 
         cls.all_checks.update((scope, name) for name in names)
@@ -69,7 +69,8 @@ class Booger(object):
                     [b],
                     filename="booger_{0:x}.png".format(id(b)),
                     extra_ignore=map(id, us),
-                    max_depth=6,
+                    max_depth=10,
+                    too_many=100,
                 )
                 b.reported = True
 
@@ -80,7 +81,7 @@ class Booger(object):
         unchecked = all_checked - cls.all_checks
         if unchecked:
             print("** These Boogers were never checked:", file=sys.stderr)
-            print("\n".join("{}: {}".format(*check) for check in unchecked), file=sys.stderr)
+            print("\n".join(": ".join(check) for check in unchecked), file=sys.stderr)
 
 
 atexit.register(Booger.check_all_checks)
