@@ -4,6 +4,7 @@ import os
 import unittest
 
 import ddt
+from lazy import lazy
 import mock
 
 from booger import Booger
@@ -76,3 +77,29 @@ class DataTestCase2(unittest.TestCase):
     def test_triple(self, ab):
         self.assertEqual(3*ab[0], ab[1])
         self.assertIsInstance(os.listdir, Booger)
+
+
+class LazyTestCase(unittest.TestCase):
+
+    @lazy
+    def boog(self):
+        return Booger("LazyTestCase")
+
+    def test_one(self):
+        self.boog
+        print("one")
+
+    def test_two(self):
+        self.boog
+        print("two")
+
+class TestCaseWithSetupClassBoogers(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.thing = Booger("TestCaseWithSetupClassBoogers", scope='class')
+
+    def test_one(self):
+        print("one")
+
+    def test_two(self):
+        print("two")

@@ -1,5 +1,6 @@
 -e .
 nose
 mock
+lazy
 ddt>=1.1.1
 objgraph
