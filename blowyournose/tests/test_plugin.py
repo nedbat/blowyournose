@@ -93,3 +93,13 @@ class LazyTestCase(unittest.TestCase):
         self.boog
         print("two")
 
+class TestCaseWithSetupClassBoogers(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.thing = Booger("TestCaseWithSetupClassBoogers", scope='class')
+
+    def test_one(self):
+        print("one")
+
+    def test_two(self):
+        print("two")

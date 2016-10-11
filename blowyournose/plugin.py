@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import sys
+import inspect
 
 from nose.plugins import Plugin
 
@@ -49,6 +50,19 @@ class BlowYourNose(Plugin):
             # Is this a decorated method?
             method = getattr(method, "__wrapped__", None)
 
+    def startContext(self, context):
+        if inspect.isclass(context):
+            context.byn_attrs = set(getattr(context, '__dict__', {}))
+
     def stopContext(self, context):
         for method in getattr(context, "blowyournose_ddt_methods", ()):
             self.clean_method(method)
+
+        # N.B. This must go after the blowyournose_ddt_methods attr
+        # has already been used for cleanup
+        if inspect.isclass(context):
+            # Delete any attribute that we didn't have at the beginning.
+            for attr in getattr(context, '__dict__', {}).keys():
+                if attr not in context.byn_attrs and attr != 'byn_attrs':
+                    delattr(context, attr)
+            del context.byn_attrs
