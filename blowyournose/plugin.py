@@ -16,13 +16,13 @@ class BlowYourNose(Plugin):
 
     def beforeTest(self, test):
         # Record the pre-existing attributes.
-        test.byn_attrs = set(dir(test.test))
+        test.byn_attrs = set(getattr(test.test, '__dict__', {}))
 
     def afterTest(self, test):
         obj = test.test
 
         # Delete any attribute that we didn't have at the beginning.
-        for attr in dir(obj):
+        for attr in getattr(obj, '__dict__', {}).keys():
             if attr not in test.byn_attrs:
                 delattr(obj, attr)
 
